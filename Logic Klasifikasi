@@ -1,0 +1,27 @@
+Logika Klasifikasi Pemeriksaan dalam iSILK
+
+Pemeriksaan ada BIDANG PEMERIKSAAN-nya: Hematologi, Mikrobiologi, Kimia Kesehatan, dll
+
+Setiap BIDANG PEMERIKSAAN dapat terdiri dari:
+	- KLASIFIKASI PEMERIKSAAN
+		Misal : Bidang Kimia Klinik, didalamnya ada Klasifikasi : Profil Lipid, Fungsi Ginjal, dalam Klasifikasi Profil Lipid ada beberapa Jenis Pemeriksaan
+	- JENIS PEMERIKSAAN (secara langsung tanpa berada di bawah Klasifikasi Tertentu)
+		Misal : Bidang Hematologi, didalamnya tidak ada lagi klasifikasi langsung jenis pemeriksaan
+
+Setiap Jenis Pemeriksaan berupa:
+	- Jenis Pemeriksaan dengan beberapa Parameter
+	- Jenis Pemeriksaan dengan tujuan pemeriksaan untuk satyu Parameter saja
+
+Setiap Parameter memiliki:
+	- Nilai RUjukan Default
+	- Nilai Rujukan Alternatif
+	Keduanya ditentukan oleh REFERENSI dan METODE UJI
+
+Pada Kimia Kesehatan REFERENSI biasanyaberupoa Peraturan Pemerintah, dll
+
+Ini Logikanya sudah mengenai semua bidang pemeriksaan termasuk Kimia Kesehatan
+
+Hal yang khusus dari Kimia Kesehatan antara lain:
+Jenis sampel yang tidak terikat menurut Jenis Pemeriksaan, jadi saat inpout Jenis Pemeriksaan untuk bidang Kimia Kesehatan pilih jenis sampel "DEPENEDENT" maksudnya jenis sampel tergantung jenis sampel yang dibawa Pendaftar.
+
+Nanti pada saat penerimaan sampel baru diinput nama sampel apa..

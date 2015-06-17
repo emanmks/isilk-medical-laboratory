@@ -1,0 +1,1 @@
+C:\root\htdocs\isilk\app/views/earnings/edit.blade.php

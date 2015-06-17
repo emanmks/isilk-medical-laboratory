@@ -1,0 +1,9 @@
+cd app
+
+chown -R www-data:www-data storage
+
+cd storage/
+
+find . -type d -exec chmod 775 {} \; && find . -type f -exec chmod 664 {} \;
+
+chown your_user:user_group .gitignore cache/.gitignore logs/.gitignore meta/.gitignore sessions/.gitignore views/.gitignore
