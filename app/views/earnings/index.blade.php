@@ -15,7 +15,7 @@
     </ol>
 </section>
 
-<section class="content">    
+<section class="content invoice">    
 
     <div class="clear-fix"><br/></div>
 
@@ -39,10 +39,10 @@
                             <td>{{ $earning->code }}</td>
                             <td>{{ $earning->earnable->code }}</td>
                             <td>{{ date('d-m-Y', strtotime($earning->earning_date)) }}</td>
-                            <td>{{ format_number($earning->costs,2,",",".") }}</td>
-                            <td>{{ format_number($earning->fee,2,",",".") }}</td>
-                            <td>{{ format_number($earning->tax,2,",",".") }}</td>
-                            <td>{{ format_number($earning->total,2,",",".") }}</td>
+                            <td>Rp{{ number_format($earning->costs,2,",",".") }}</td>
+                            <td>Rp{{ number_format($earning->fee,2,",",".") }}</td>
+                            <td>Rp{{ number_format($earning->tax,2,",",".") }}</td>
+                            <td>Rp{{ number_format($earning->total,2,",",".") }}</td>
                         </tr>
                     @endforeach
                 </tbody>

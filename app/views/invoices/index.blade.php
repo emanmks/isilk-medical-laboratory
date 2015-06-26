@@ -39,10 +39,10 @@
                             <td>{{ $invoice->code }}</td>
                             <td>{{ $invoice->laboratory->code }}</td>
                             <td>{{ $invoice->financer->name }}</td>
-                            <td>{{ format_number($invoice->costs,2,",",".") }}</td>
-                            <td>{{ format_number($invoice->fee,2,",",".") }}</td>
-                            <td>{{ format_number($invoice->tax,2,",",".") }}</td>
-                            <td>{{ format_number($invoice->total,2,",",".") }}</td>
+                            <td>{{ number_format($invoice->costs,2,",",".") }}</td>
+                            <td>{{ number_format($invoice->fee,2,",",".") }}</td>
+                            <td>{{ number_format($invoice->tax,2,",",".") }}</td>
+                            <td>{{ number_format($invoice->total,2,",",".") }}</td>
                         </tr>
                     @endforeach
                 </tbody>
