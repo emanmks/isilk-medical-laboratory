@@ -292,6 +292,9 @@ img {
 }
 /* Don't display when printing */
 @media print {
+  body{
+    font-family: "Courier New", Courier, monospace;
+  }
   .no-print {
     display: none;
   }
@@ -2418,6 +2421,10 @@ Component: timeline
   .table-responsive > .table tr td {
     white-space: normal!important;
   }
+  .table-bordered > .table tr th, .table-bordered > .table tr td {
+    overflow: auto;
+    white-space: normal!important;
+  }
 }
 /* 
     Skins
@@ -2801,4 +2808,28 @@ Component: timeline
 }
 .pace-inactive {
   display: none;
+}
+
+.thumb-menu {
+  color: #2c3e50;
+  min-height: 100px;
+  text-align: center;
+}
+
+.husada{
+  margin-top: 15px;
+  margin-left: 30px;
+}
+
+.kop{
+  margin-top: 20px;
+  margin-left: 10px;
+}
+
+.destination{
+  margin-left: 50px;
+}
+
+.no-border {
+  border:none;
 }
