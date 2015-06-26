@@ -15,122 +15,130 @@
 
 <section class="content invoice">
 
-    <small>
-
-        <div class="row">
-            <div class="col-xs-12">
-                <p>
-                    <h4><strong>Balai Besar Laboratorium Kesehatan Makassar</strong></h4>
-                    <small>
-                        Kementerian Kesehatan Republik Indonesia<br/>
-                        Jl. Perintis Kemerdekaan<br>
-                        Makassar, Sulawesi Selatan<br>
-                        Telepon: (0411) 123-5432<br/>
-                        Fax: (0411) 123-5432
-                    </small>
-                </p>
-            </div>    
-        </div>
-
-        <div class="row">
-             <div class="col-xs-12">
+    <div class="row">
+        <div class="col-lg-12">
+            <p>
+                <strong>Balai Besar Laboratorium Kesehatan Makassar</strong><br/>
+                Kementerian Kesehatan Republik Indonesia<br/>
                 <small>
-                    <table class="table table-condensed">
-                        <thead>
-                            <tr class="success">
-                                <th><i class="fa fa-files-o"></i>  Kwitansi Pembayaran Nomor : #{{ $earning->code }}</th>
-                                <th><small class="pull-right">Tanggal Cetak : {{ date('d-m-Y H:i:s') }}</small></th>
-                            </tr>
-                        </thead>
-                    </table>
+                    Jl. Perintis Kemerdekaan<br>
+                    Makassar, Sulawesi Selatan<br>
+                    Telepon: (0411) 123-5432<br/>
+                    Fax: (0411) 123-5432
                 </small>
-            </div>
-        </div>
+            </p>
+        </div>    
+    </div>
 
-        <div class="row invoice-info">
-            <div class="col-xs-12">
-                <small>
-                    <table class="table table-condensed">
-                        <tr>
-                            <td width="34%">
-                                Terima Dari:
+    <div class="row invoice-info">
+        <div class="col-lg-12">
+            <small>
+                <table class="table table-condensed">
+                    <tr>
+                        <td width="70%">
+                            Customer:
+
+                            @if($earning->earnable->registrant_type == "Patient")
                                 <address>
-                                    <strong>{{ $earning->earnable->registrant->name }}</strong><br/>
-                                    Nomor Pasien: {{ $earning->earnable->registrant->code }}<br/>
+                                    <strong>
+                                        {{ ucfirst(strtolower($earning->earnable->registrant->name)) }}<br/>
+                                        #{{ $earning->earnable->registrant->code }}<br/>
+                                    </strong>
+                                    @if($earning->earnable->registrant->sex == 'L')
+                                        Laki-laki
+                                    @else
+                                        Perempuan
+                                    @endif
+                                    <br/>
+                                    {{ date('d-m-Y', strtotime($earning->earnable->registrant->birthdate)) }} , Usia: {{ floor((time() - strtotime($earning->earnable->registrant->birthdate)) / 31556926 ) }}<br/>
+                                    {{ $earning->earnable->registrant->address }}<br/>
+                                    {{ $earning->earnable->registrant->contact }}<br/>
+                                    {{ $earning->earnable->registrant->city->name or '' }}<br/>
                                 </address>
-                            </td>
-                            <td width="33%">
-                                <center>
-                                    Diterima Oleh:<br/>
-                                    <strong>{{ $earning->earnable->employee->name }}</strong><br/>
-                                </center>
-                            </td>
-                            <td width="33%">
-                                <div class="pull-right">
-                                    Pada:<br/>
-                                    <strong>{{ date('d-m-Y', strtotime($earning->earnable->registrationtime)) }}</strong>
-                                </div>
-                            </td>
+                            @elseif($earning->earnable->registrant_type == "Office")
+                                <address>
+                                    <strong>
+                                        {{ $earning->earnable->registrant->name }}<br/>
+                                    </strong>
+                                    {{ $earning->earnable->registrant->address }}<br/>
+                                    {{ $earning->earnable->registrant->phone }}<br/>
+                                    {{ $earning->earnable->registrant->fax }}<br/>
+                                </address>
+                            @endif   
+                        </td>
+                        <td width="30%">
+                            <br/>
+                            <address>
+                                Nomor Kwitansi : <strong>#{{ $earning->code }}</strong><br/>
+                                Nomor Lab : <strong>#{{ $earning->earnable->code }}</strong><br/>
+                                Pendaftaran : <strong>{{ date("d/m/Y H:i:s", strtotime($earning->earnable->registrationtime)) }}</strong><br/>
+                                Cetak : <strong>{{ date("d/m/Y H:i:s", strtotime($earning->earnable->registrationtime)) }}</strong><br/>
+                            </address>
+                        </td>
+                    </tr>
+                </table> 
+            </small>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <small>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr class="success" style="height: 10px; overflow:auto;">
+                            <th colspan="3"><center>RINCIAN BIAYA</center></th>
                         </tr>
-                    </table> 
-                </small>
-            </div>
+                        <tr class="warning" style="height: 10px; overflow:auto;">
+                            <th width="20%"><center>Kode</center></th>
+                            <th width="47%"><center>Nama Pemeriksaan</center></th>
+                            <th width="33%"><span class="pull-right">Tarif</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($earning->earnable->choices as $choice)
+                            <tr style="height: 8px; overflow:auto;">
+                                <th><center>{{ $choice->examinable->code }}</center></th>
+                                <th>{{ $choice->examinable->name }}</th>
+                                <th><span class="pull-right">Rp{{ number_format($choice->examinable->price,2,",",".") }}</span></th>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                    <tfoot>
+                        <tr style="height: 7px; overflow:auto;">
+                            <td colspan="2" class="text-right" style="border-top:0">Beban Biaya Pemeriksaan</td>
+                            <td style="border-top:0"><strong class="pull-right">Rp{{ number_format($earning->costs,2,",",".") }}</strong></td>
+                        </tr>
+                        <tr style="height: 7px; overflow:auto;">
+                            <td colspan="2" class="text-right" style="border-top:0">Biaya Konsul</td>
+                            <td style="border-top:0"><strong class="pull-right">Rp{{ number_format($earning->fee,2,",",".") }}</strong></td>
+                        </tr>
+                        <tr style="height: 7px; overflow:auto;">
+                            <td colspan="2" class="text-right" style="border-top:0">Total Biaya yang Dibebankan</td>
+                            <td style="border-top:0; border-bottom: 1 double"><strong class="pull-right">Rp{{ number_format($earning->total,2,",",".") }}</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </small>
         </div>
+    </div>
 
-        <div class="row">
-            <div class="col-xs-12">
-                <small>
-                    <table class="table table-condensed">
-                        <thead>
-                            <tr class="success">
-                                <th colspan="2"><center>Biaya</center></th>
-                            </tr>
-                            <tr class="warning">
-                                <th>Keterangan</th>
-                                <th><div class="pull-right">Jumlah</span></th>
-                            </tr>   
-                        </thead>
-
-                        <tbody>
-                            <tr>
-                                <td>Beban Biaya Pemeriksaan</td>
-                                <td><strong class="pull-right">Rp{{ number_format($earning->costs,2,",",".") }}</strong></td>
-                            </tr>
-                            <tr>
-                                <td>Biaya Konsul</td>
-                                <td><strong class="pull-right">Rp{{ number_format($earning->fee,2,",",".") }}</strong></td>
-                            </tr>
-                            <tr>
-                                <td>Pajak</td>
-                                <td><strong class="pull-right">{{ $earning->tax }}%</strong></td>
-                            </tr>
-                            <tr>
-                                <td>Total Biaya yang Dibebankan</td>
-                                <td><strong class="pull-right">Rp{{ number_format($earning->total,2,",",".") }}</strong></td>
-                            </tr>
-                        </tbody>
-                    </table>  
-                </small>
-            </div>
+    <div class="row">
+        <div class="col-xs-8"></div>
+        <div class="col-xs-3">
+            <small>
+                <center>
+                    <span>Makassar, {{ date('d-m-Y') }}</span><br/><br/><br/>
+                    <span>{{ $earning->earnable->employee->name }}</span>      
+                </center>      
+            </small>
         </div>
+        <div class="col-xs-1"></div>
+    </div>
 
-        <div class="row">
-            <div class="col-xs-8"></div>
-            <div class="col-xs-3">
-                <small>
-                    <center>
-                        <span>Makassar, {{ date('d-m-Y') }}</span><br/><br/><br/>
-                        <span>{{ $earning->earnable->employee->name }}</span>      
-                    </center>      
-                </small>
-            </div>
-            <div class="col-xs-1"></div>
-        </div>
-
-    </small>
 
     <div class="row no-print">
-        <div class="col-xs-12">
+        <div class="col-lg-12">
             <button class="btn btn-default" onclick="window.print();"><i class="fa fa-print"></i> Print</button>
         </div>
     </div>
