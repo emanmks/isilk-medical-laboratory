@@ -37,7 +37,7 @@
                     <table class="table table-condensed">
                         <thead>
                             <tr class="success">
-                                <th><i class="fa fa-files-o"></i>  Invoice Nomor : #{{ $invoice->code }}</th>
+                                <th><i class="fa fa-files-o"></i>  SPU Nomor : #{{ $invoice->code }}</th>
                                 <th><small class="pull-right">Tanggal Cetak : {{ date('d-m-Y H:i:s') }}</small></th>
                             </tr>
                         </thead>
@@ -46,73 +46,114 @@
             </div>
         </div>
 
-        <div class="row invoice-info">
-            <div class="col-xs-12">
-                <small>
-                    <table class="table table-condensed">
-                        <tr>
-                            <td>
-                                Ditagihkan Kepada:
-                                <address>
-                                    <strong>{{ $invoice->laboratory->registrant->name }}</strong><br/>
-                                    Alamat: {{ $invoice->laboratory->registrant->address }}, {{ $invoice->laboratory->registrant->city->name }}<br/>
-                                    Kontak: {{ $invoice->laboratory->registrant->phone }} / Fax: {{ $invoice->laboratory->registrant->fax }}
-                                </address>
-                            </td>
-                        </tr>
-                    </table> 
-                </small>
+        <div class="row">
+            <div class="col-lg-12">
+                <center><h3>SURAT PERNYATAAN UTANG</h3></center>
+                <p>Saya yang bertanda tangan di bawah ini:</p>
+            </div>
+        </div>
+
+        <div class="row invoice-info small">
+            <div class="col-lg-4">
+                <p>
+                    Nama <br/>
+                    No. KTP/Identitas Lainnya <br/>
+                    Alamat Sesuai Identitas <br/>
+                    Alamat Tempat Tinggal <br/>
+                    No. Telp/Hp <br/>
+                </p>
+            </div>
+            <div class="col-lg-8">
+                <p>
+                    : {{ $invoice->guarantor_name }} <br/>
+                    : {{ $invoice->guarantor_id_card }} <br/>
+                    : {{ $invoice->guarantor_id_address }} <br/>
+                    : {{ $invoice->guarantor_address }} <br/>
+                    : {{ $invoice->guarantor_contact }} <br/>
+                </p>
+            </div>
+            <p>Sebagai penanggung jawab atas pasien / perusahaan / instansi:</p>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4">
+                <p>
+                    ID Pasien <br/>
+                    Nama <br/>
+                    Alamat <br/>
+                    Nomor Lab <br/>
+                    Tgl Kunjungan <br/>
+                    Jenis Sampel <br/>
+                    Parameter Uji
+                </p>
+            </div>
+            <div class="col-lg-8">
+                <p>
+                    : {{ $invoice->laboratory->registrant->code or '' }} <br/>
+                    : {{ $invoice->laboratory->registrant->name or '' }} <br/>
+                    : {{ $invoice->laboratory->registrant->address or ''}} <br/>
+                    : {{ date('d/m/Y', strtotime($invoice->laboratory->registration_time)) }} <br/>
+                    : @foreach($invoice->laboratory->samplings as $sampling)
+                        {{ $sampling->speciment->name }}
+                    @endforeach <br/>
+                    : @foreach($invoice->laboratory->choices as $choice)
+                        {{ $choice->name }}
+                    @endforeach
+                </p>
             </div>
         </div>
 
         <div class="row">
-            <div class="col-xs-12">
-                <small>
-                    <table class="table table-condensed">
-                        <thead>
-                            <tr class="success">
-                                <th colspan="2"><center>Rincian Tagihan</center></th>
-                            </tr>
-                            <tr class="warning">
-                                <th>Keterangan</th>
-                                <th><div class="pull-right">Jumlah</span></th>
-                            </tr>   
-                        </thead>
-
-                        <tbody>
-                            <tr>
-                                <td>Beban Biaya Pemeriksaan</td>
-                                <td><strong class="pull-right">Rp{{ number_format($invoice->costs,2,",",".") }}</strong></td>
-                            </tr>
-                            <tr>
-                                <td>Biaya Konsul</td>
-                                <td><strong class="pull-right">Rp{{ number_format($invoice->fee,2,",",".") }}</strong></td>
-                            </tr>
-                            <tr>
-                                <td>Pajak</td>
-                                <td><strong class="pull-right">{{ $invoice->tax }}%</strong></td>
-                            </tr>
-                            <tr>
-                                <td>Total Biaya yang Dibebankan</td>
-                                <td><strong class="pull-right">Rp{{ number_format($invoice->total,2,",",".") }}</strong></td>
-                            </tr>
-                        </tbody>
-                    </table>  
-                </small>
+            <div class="col-lg-4">
+                <p>
+                    Jumlah Biaya Pemeriksaan <br/>
+                    Jumlah yang telah dibayar <br/>
+                    Jumlah yang belum dibayar
+                </p>
+            </div>
+            <div class="col-lg-8">
+                <p>
+                    : Rp {{ number_format($invoice->total,2,",",".") }} <br/>
+                    : Rp {{ number_format($invoice->total - $invoice->balance,2,",",".") }} <br/>
+                    : Rp {{ number_format($invoice->balance,2,",",".") }} 
+                </p>
             </div>
         </div>
 
         <div class="row">
-            <div class="col-xs-8"></div>
-            <div class="col-xs-3">
+            <div class="col-lg-12">
+                <p>
+                    Menyatakan bahwa saya memiliki utang kepada Balai Besar Laboratorium Kesehatan Makassar sebesar
+                    Rp {{ number_format($invoice->balance,2,",",".") }} 
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <p>Demikian surat pernyataan ini saya buat dengan sebenar-benarnya :</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-1"></div>
+            <div class="col-lg-7">
+                <small>
+                    Mengetahui,<br/>
+                    Petugas BBLK <br/><br/><br/><br/>
+                    {{ $invoice->laboratory->employee->name }}
+                </small>
+            </div>
+            <div class="col-lg-3">
                 <small>
                     <center>
-                        <span>Makassar, {{ date('d-m-Y') }}</span><br/><br/><br/>
-                        <span>{{ $invoice->laboratory->employee->name }}</span>      
+                        Makassar, {{ date('d-m-Y') }}<br/>
+                        Pembuat Pernyataan <br/><br/><br/><br/>
+                        {{ $invoice->guarantor_name }}      
                     </center>      
                 </small>
             </div>
-            <div class="col-xs-1"></div>
+            <div class="col-lg-1"></div>
         </div>
 
     </small>

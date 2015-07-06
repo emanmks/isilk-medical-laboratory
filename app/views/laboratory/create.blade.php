@@ -276,6 +276,33 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row"><br/></div>
+                    <div class="row" id="downpayment">
+                        <div class="col-lg-3">
+                            <label>Penanggung Jawab</label>
+                            <input type="text" name="guarantor_name" value="" class="form-control">
+                        </div>
+                        <div class="col-lg-3">
+                            <label>KTP/Identitas</label>
+                            <input type="text" name="guarantor_id_card" value="" class="form-control">
+                        </div>
+                        <div class="col-lg-3">
+                            <label>Alamat Identitas</label>
+                            <textarea name="guarantor_id_address" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="col-lg-3">
+                            <label>Alamat Tinggal</label>
+                            <textarea name="guarantor_address" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="col-lg-3">
+                            <label>Telepon</label>
+                            <input type="text" name="guarantor_contact" value="" class="form-control">
+                        </div>
+                        <div class="col-lg-3">
+                            <label>Down Payment</label>
+                            <input type="text" name="downpayment" value="0" class="form-control">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -354,6 +381,8 @@
 
     $(function(){
 
+        $('#downpayment').hide();
+
         $('#notification').hide();
 
         $('[name=patient_birthdate]').datepicker({format:"yyyy-mm-dd", autoclose:true});
@@ -395,6 +424,8 @@
             if(this.value == '3'){
                 $('[name=financers]').removeAttr("disabled");
                 $('[name=insurance_id]').removeAttr("disabled");
+            }else if(this.value == '2'){
+                $('#downpayment').show();
             }else{
                 $('[name=financers]').disabled = false;
             }
@@ -817,6 +848,12 @@
         var fee = $('[name=fee]').val();
         var tax = $('[name=tax]').val();
         var total = $('[name=total]').val();
+        var guarantor_name = $('[name=guarantor_name]').val();
+        var guarantor_id_card = $('[name=guarantor_id_card]').val();
+        var guarantor_id_address = $('[name=guarantor_id_address]').val();
+        var guarantor_address = $('[name=guarantor_address]').val();
+        var guarantor_contact = $('[name=guarantor_contact]').val();
+        var downpayment = $('[name=downpayment]').val();
 
         $('[name=packages]:checked').each(function(){
             packages.push($(this).val());
@@ -843,7 +880,10 @@
                         packages:packages, services:services,regulation_id:regulation_id,
                         recommender:recommender, recommender_name:recommender_name,
                         multiplier:multiplier, payments:payments, financer_id:financer_id,insurance_id:insurance_id,
-                        costs:costs, fee:fee, tax:tax, total:total},
+                        costs:costs, fee:fee, tax:tax, total:total,
+                        guarantor_name:guarantor_name, guarantor_id_card:guarantor_id_card,
+                        guarantor_id_address:guarantor_id_address, guarantor_address:guarantor_address,
+                        guarantor_contact:guarantor_contact,downpayment:downpayment},
                     success:function(response){
                         if(response.status == 'Aborted'){
 

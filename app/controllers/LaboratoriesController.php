@@ -266,6 +266,8 @@ class LaboratoriesController extends BaseController {
 		$fee = Input::get('fee');
 		$tax = Input::get('tax');
 		$total = Input::get('total');
+		$dp = Input::get('downpayment');
+		$balance = $total - $dp;
 
 
 		if($payment_type == 1){
@@ -296,11 +298,34 @@ class LaboratoriesController extends BaseController {
 			$invoice->fee 				= $fee;
 			$invoice->tax 				= $tax;
 			$invoice->total 			= $total;
+			$invoice->balance 			= $balance;
+			$invoice->guarantor_name 	= Input::get('guarantor_name');
+			$invoice->guarantor_id_card 	= Input::get('guarantor_id_card');
+			$invoice->guarantor_id_address 	= Input::get('guarantor_id_address');
+			$invoice->guarantor_address 	= Input::get('guarantor_address');
+			$invoice->guarantor_contact 	= Input::get('guarantor_contact');
 			$invoice->save();
 
 			// Generate Invoice Code
 			$invoice->code 				= $this->generateInvoiceCode($invoice->id);
 			$invoice->save();
+
+			if($dp > 0) {
+				// Store Earning for Cash Payment
+				$earning 					= new Earning;
+				$earning->earnable_type		= 'Laboratory';
+				$earning->earnable_id		= $laboratory->id;
+				$earning->earning_date		= date('Y-m-d');
+				$earning->costs 			= $dp;
+				$earning->fee 				= 0;
+				$earning->tax 				= 0;
+				$earning->total 			= $dp;
+				$earning->save();
+
+				// Generate Earning Code
+				$earning->code = $this->generateEarningCode($earning->id);
+				$earning->save();
+			}
 
 		}else if($payment_type == 3){
 

@@ -14,7 +14,7 @@
     {{ HTML::style('assets/css/ionicons.css') }}
 
     <!-- Admin LTE CSS - Include with every page -->
-    {{ HTML::style('assets/css/adminLTE.css') }}
+    {{ HTML::style('assets/css/AdminLTE.css') }}
 
 
     <!-- Core Scripts - Include with every page -->
