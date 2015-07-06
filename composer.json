@@ -7,6 +7,10 @@
 	"require": {
 		"laravel/framework": "4.2.*"
 	},
+	"require-dev": {
+	    "way/generators": "~2.0",
+	    "xethron/migrations-generator": "dev-master"
+	},
 	"autoload": {
 		"classmap": [
 			"app/commands",
