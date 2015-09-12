@@ -15,7 +15,7 @@ class LaboratoriesController extends BaseController {
 		//$laboratories = Laboratory::where(DB::raw('date(registrationtime)'), "=", date('Y-m-d'))->get();
 		$laboratories = Laboratory::orderBy('id','desc')->paginate(20);
 		$menu = 'registration';
-		
+
 		return View::make('laboratory/index', compact('laboratories','menu'));
 	}
 
@@ -36,8 +36,18 @@ class LaboratoriesController extends BaseController {
 		$classifications = Classification::where('parent_id','=',0)->get();
 		$menu = 'registration';
 
-		return View::make('laboratory/create', 
+		return View::make('laboratory/create',
 						compact('financers','packages','regulations','methods','classifications','menu'));
+	}
+
+	public function edit($id)
+	{
+		$laboratory = Laboratory::findOrFail($id);
+		$classifications = Classification::where('parent_id','=',0)->get();
+		$menu = 'registration';
+
+		return View::make('laboratory/create',
+						compact('classifications','menu'));
 	}
 
 	public function store()
@@ -75,7 +85,7 @@ class LaboratoriesController extends BaseController {
 		 * 2. Packages and Services is empty
 		 */
 		if((empty($packages) && empty($services)) || $registrant_type == 'Unknown'){
-			
+
 			// send json to client and then stop execution
 			return array('status' => 'Aborted');
 			exit();
@@ -83,7 +93,7 @@ class LaboratoriesController extends BaseController {
 		}
 
 		/*return array('patient_id' => Input::get('patient_id'),'office_id' => Input::get('office_id'),
-					'packages' => $packages, 'services' => $services, 
+					'packages' => $packages, 'services' => $services,
 					'registrant_type' => $registrant_type);*/
 
 		// Store New Registration Record to Database
@@ -102,7 +112,7 @@ class LaboratoriesController extends BaseController {
 		$laboratory->save();
 
 		// Create Choices & Samplings
-		
+
 		if(count($packages) > 0)
 		{
 			$packagesLength = count($packages);
@@ -120,7 +130,7 @@ class LaboratoriesController extends BaseController {
 				$choice->save();
 
 				// Generate Samplings Record
-				foreach ($package->speciments as $speciment) 
+				foreach ($package->speciments as $speciment)
 				{
 					$sampling = new Sampling;
 					$sampling->laboratory_id = $laboratory->id;
@@ -154,7 +164,7 @@ class LaboratoriesController extends BaseController {
 						$examination->save();
 
 						//Create Examination Parameters using Attach
-						foreach ($service->parameters as $parameter) 
+						foreach ($service->parameters as $parameter)
 						{
 							$normal = Normal::where('parameter_id','=',$parameter->id)->first();
 
@@ -168,9 +178,9 @@ class LaboratoriesController extends BaseController {
 								$result->regulation = $normal->regulation->name;
 								$result->method = $normal->method->name;
 								$result->save();
-								
+
 							}
-							
+
 						}
 					}
 				}
@@ -221,7 +231,7 @@ class LaboratoriesController extends BaseController {
 
 			$choices = Choice::where('laboratory_id','=',$laboratory->id)->where('examinable_type','=','Service')->get();
 
-			foreach ($choices as $choice) 
+			foreach ($choices as $choice)
 			{
 				$service = Service::with('parameters')->find($choice->examinable_id);
 
@@ -237,7 +247,7 @@ class LaboratoriesController extends BaseController {
 						$examination->save();
 
 						//Create Examination Parameters using Attach
-						foreach ($service->parameters as $parameter) 
+						foreach ($service->parameters as $parameter)
 						{
 							$result = new Result;
 							$result->examination_id = $examination->id;
@@ -250,10 +260,10 @@ class LaboratoriesController extends BaseController {
 						}
 					}
 				}
-			}	
+			}
 		}
 
-		
+
 		/**
 		 * Prepare for Payment
 		 * payment_type == 1 is Cash Payment
@@ -288,7 +298,7 @@ class LaboratoriesController extends BaseController {
 			$earning->save();
 
 		}else if($payment_type == 2){
-			
+
 			// Store Invoice for Patient/Office
 			$invoice 					= new Invoice;
 			$invoice->laboratory_id		= $laboratory->id;
@@ -433,7 +443,7 @@ class LaboratoriesController extends BaseController {
 
 		}
 
-		Choice::where('laboratory_id','=',$id)->delete();	
+		Choice::where('laboratory_id','=',$id)->delete();
 
 		Sampling::where('laboratory_id','=',$id)->delete();
 
